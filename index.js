@@ -34,7 +34,7 @@ async function main() {
 // If you are testing with the CLI, find the secret by running 'stripe listen'
 // If you are using an endpoint defined with the API or dashboard, look in your webhook settings
 // at https://dashboard.stripe.com/webhooks
-const endpointSecret = "whsec_xWd5waJuVhNel0M1i0FfuZOWdVyodUN9";
+const endpointSecret = process.env.ENDPOINT_SECRET;
 
 app.post(
   "/webhook",
