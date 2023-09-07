@@ -157,7 +157,7 @@ app.get("*", (req, res) => {
 
 const opts = {};
 opts.jwtFromRequest = cookieExtractor;
-opts.secretOrKey = process.env.JWT_SECRET_KEY;
+opts.secretOrKey = process.env.JWT_SECRET;
 
 // opts.issuer = "accounts.examplesoft.com";
 // opts.audience = "yoursite.net";
