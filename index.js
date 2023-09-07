@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -23,11 +24,36 @@ const JwtStrategy = require("passport-jwt").Strategy,
 
 main().catch((err) => console.log(err));
 async function main() {
-  await mongoose.connect(
-    "mongodb+srv://coderdost:tjRsJBOHhLd4lCs8@cluster0.woftb4m.mongodb.net/ecommerce?retryWrites=true&w=majority"
-  );
+  await mongoose.connect(process.env.MONGO_URL);
   console.log("database connected");
 }
+
+// WebHook...
+app.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  (request, response) => {
+    const event = request.body;
+
+    // Handle the event
+    switch (event.type) {
+      case "payment_intent.succeeded":
+        const paymentIntent = event.data.object;
+        console.log("PaymentIntent was successful!", paymentIntent);
+        break;
+      case "payment_method.attached":
+        const paymentMethod = event.data.object;
+        console.log("PaymentMethod was attached to a Customer!");
+        break;
+      // ... handle other event types
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+
+    // Return a 200 response to acknowledge receipt of the event
+    response.json({ received: true });
+  }
+);
 
 // middlewares...
 app.use(express.static("build"));
@@ -60,35 +86,7 @@ app.use(passport.initialize());
 // });
 
 // This is your test secret API key.
-const stripe = require("stripe")(
-  "sk_test_51NmxI3I7qY0ytqpsPmg577sy3pFZfHaduQYUsU9SQnRyqIKE4FxzJgIVCAPd67CAGm3QrQZjmArWzFekHvB3cxdr00NofginjN"
-);
-
-app.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),
-  (request, response) => {
-    const event = request.body;
-
-    // Handle the event
-    switch (event.type) {
-      case "payment_intent.succeeded":
-        const paymentIntent = event.data.object;
-        console.log("PaymentIntent was successful!", paymentIntent);
-        break;
-      case "payment_method.attached":
-        const paymentMethod = event.data.object;
-        console.log("PaymentMethod was attached to a Customer!");
-        break;
-      // ... handle other event types
-      default:
-        console.log(`Unhandled event type ${event.type}`);
-    }
-
-    // Return a 200 response to acknowledge receipt of the event
-    response.json({ received: true });
-  }
-);
+const stripe = require("stripe")(process.env.STRIPE_SERVER_KEY);
 
 // const calculateOrderAmount = (items) => {
 //   // Replace this constant with a calculation of the order's amount
@@ -97,6 +95,7 @@ app.post(
 //   return 1400;
 // };
 
+// Creating Payment Intent...
 app.post("/create-payment-intent", async (req, res) => {
   const { totalAmount } = req.body;
 
@@ -130,7 +129,7 @@ app.get("*", (req, res) => {
 
 const opts = {};
 opts.jwtFromRequest = cookieExtractor;
-opts.secretOrKey = "SECRET_KEY";
+opts.secretOrKey = process.env.JWT_SECRET_KEY;
 
 // opts.issuer = "accounts.examplesoft.com";
 // opts.audience = "yoursite.net";
@@ -208,6 +207,6 @@ passport.use(
 //     return done(error);
 //   }
 // });
-app.listen("8080", () => {
+app.listen(process.env.PORT, () => {
   console.log("server started");
 });

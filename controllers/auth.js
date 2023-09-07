@@ -3,7 +3,7 @@ const { sanitizeUser } = require("../services/common");
 const User = model.User;
 const crypto = require("crypto");
 
-const SECRET_KEY = "SECRET_KEY";
+const SECRET_KEY = process.env.JWT_SECRET_KEY;
 const jwt = require("jsonwebtoken");
 
 exports.loginUser = async (req, res) => {
