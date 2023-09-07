@@ -43,6 +43,14 @@
       "dest": "index.js"
     },
     {
+      "src": "/auth",
+      "dest": "index.js"
+    },
+    {
+      "src": "/auth/(.*)",
+      "dest": "index.js"
+    },
+    {
       "src": "/cart",
       "dest": "index.js"
     },
