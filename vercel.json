@@ -81,6 +81,10 @@
     {
       "src": "/(.+)",
       "dest": "build/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "build/index.html"
     }
   ]
 }
