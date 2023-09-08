@@ -151,7 +151,7 @@ app.use("/auth", authRouter.router);
 app.use("/cart", isAuth(), cartRouter.router);
 app.use("/orders", isAuth(), orderRouter.router);
 app.get("*", (req, res) => {
-  console.log("muje hit kia");
+  console.log("wild card hit kiya");
   res.sendFile(path.resolve("build", "index.html"));
 });
 // jwt Strategy...

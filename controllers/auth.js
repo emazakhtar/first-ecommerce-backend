@@ -62,7 +62,7 @@ exports.signUpUser = async (req, res, next) => {
   }
 };
 exports.checkUser = (req, res) => {
-  console.log("hit kia bhai muje");
+  console.log("checkuser ko hit kia");
   if (req && req.user) {
     const token = jwt.sign(sanitizeUser(req.user), SECRET_KEY);
     res.status(200).json(token);
