@@ -73,6 +73,10 @@
     {
       "src": "/create-payment-intent",
       "dest": "index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/build/index.html"
     }
   ]
 }
