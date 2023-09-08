@@ -1,6 +1,11 @@
 const { Schema } = require("mongoose");
 const mongoose = require("mongoose");
 
+// Clear the model cache if the model already exists
+if (mongoose.connection.models["Product"]) {
+  delete mongoose.connection.models["Product"];
+}
+
 const productSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true, unique: true },

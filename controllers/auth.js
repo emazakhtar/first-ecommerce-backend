@@ -1,4 +1,4 @@
-const model = require("../models/user");
+const model = require("../models/User");
 const { sanitizeUser } = require("../services/common");
 const User = model.User;
 const crypto = require("crypto");

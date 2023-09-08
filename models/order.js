@@ -1,6 +1,11 @@
 const { Schema } = require("mongoose");
 const mongoose = require("mongoose");
 
+// Clear the model cache if the model already exists
+if (mongoose.connection.models["Order"]) {
+  delete mongoose.connection.models["Order"];
+}
+
 const orderSchema = new Schema({
   cartItems: { type: [Schema.Types.Mixed], required: true },
   totalItems: { type: Number, required: true },
