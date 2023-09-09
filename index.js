@@ -137,16 +137,16 @@ const stripe = require("stripe")(process.env.STRIPE_SERVER_KEY);
 // Creating Payment Intent...
 app.post("/create-payment-intent", async (req, res) => {
   console.log(req.body);
-  // Create a PaymentIntent with the order amount and currency
+  const { totalAmount, orderId } = req.body; // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: req.body.totalAmount * 100,
+    amount: totalAmount * 100,
     currency: "eur",
     // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
     automatic_payment_methods: {
       enabled: true,
     },
     metadata: {
-      order_id: req.body.orderId,
+      order_id: orderId,
     },
   });
 
