@@ -150,10 +150,7 @@ app.use("/user", isAuth(), userRouter.router);
 app.use("/auth", authRouter.router);
 app.use("/cart", isAuth(), cartRouter.router);
 app.use("/orders", isAuth(), orderRouter.router);
-app.get("*", (req, res) => {
-  console.log("wild card hit kiya");
-  res.sendFile(path.resolve("build", "index.html"));
-});
+app.get("*", (req, res) => res.sendFile(path.resolve("build", "index.html")));
 // jwt Strategy...
 
 const opts = {};
