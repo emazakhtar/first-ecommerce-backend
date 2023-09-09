@@ -74,7 +74,6 @@ app.post(
         console.log(doc);
         doc.paymentStatus = "received";
         await doc.save();
-
         break;
       case "payment_method.attached":
         const paymentMethod = event.data.object;
