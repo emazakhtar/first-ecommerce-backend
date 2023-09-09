@@ -97,7 +97,7 @@ app.use(express.json());
 app.use(
   cors({
     exposedHeaders: ["X-Total-Count"],
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "http://localhost:8080"],
     credentials: true,
   })
 );
