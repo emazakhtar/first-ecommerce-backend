@@ -71,6 +71,7 @@ app.post(
         // handlePaymentIntentSucceeded(paymentIntent);
         try {
           const doc = await Order.findById(paymentIntent.metadata.order_id);
+          console.log(doc);
           doc.paymentStatus = "received";
           doc.save();
         } catch (err) {
@@ -135,8 +136,7 @@ const stripe = require("stripe")(process.env.STRIPE_SERVER_KEY);
 
 // Creating Payment Intent...
 app.post("/create-payment-intent", async (req, res) => {
-  const { totalAmount } = req.body;
-  const { orderId } = req.body;
+  const { totalAmount, orderId } = req.body;
 
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
