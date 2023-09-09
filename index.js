@@ -73,7 +73,7 @@ app.post(
           const doc = await Order.findById(paymentIntent.metadata.order_id);
           console.log(doc);
           doc.paymentStatus = "received";
-          doc.save();
+          await doc.save();
         } catch (err) {
           console.log(err);
         }
