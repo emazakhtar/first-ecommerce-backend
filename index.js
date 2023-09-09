@@ -69,14 +69,11 @@ app.post(
         );
         // Then define and call a method to handle the successful payment intent.
         // handlePaymentIntentSucceeded(paymentIntent);
-        try {
-          const doc = await Order.findById(paymentIntent.metadata.order_id);
-          console.log(doc);
-          doc.paymentStatus = "received";
-          await doc.save();
-        } catch (err) {
-          console.log(err);
-        }
+
+        const doc = await Order.findById(paymentIntent.metadata.order_id);
+        console.log(doc);
+        doc.paymentStatus = "received";
+        await doc.save();
 
         break;
       case "payment_method.attached":
