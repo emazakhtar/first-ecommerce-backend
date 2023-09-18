@@ -63,6 +63,14 @@ exports.updateOrder = async (req, res) => {
     const updatedOrder = await Order.findOneAndUpdate({ _id: id }, req.body, {
       new: true,
     });
+
+    // Validate the updated document, including the enum field
+    // const validationError = updatedOrder.validateSync();
+
+    // if (validationError) {
+    //   res.status(400).json(validationError);
+    // }
+
     res.status(200).json(updatedOrder);
   } catch (err) {
     res.status(400).json(err);
