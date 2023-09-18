@@ -22,14 +22,20 @@ exports.getAll = async (req, res) => {
 
   // Filtering...
   if (req.query.category) {
+    console.log(req.query.category.split(","));
     query = query.find({
-      category: req.query.category,
+      category: { $in: req.query.category.split(",") },
     });
-    totalDocsQuery = totalDocsQuery.find({ category: req.query.category });
+    totalDocsQuery = totalDocsQuery.find({
+      category: { $in: req.query.category.split(",") },
+    });
   }
   if (req.query.brand) {
-    query = query.find({ brand: req.query.brand });
-    totalDocsQuery = totalDocsQuery.find({ brand: req.query.brand });
+    console.log(req.query.brand.split(","));
+    query = query.find({ brand: { $in: req.query.brand.split(",") } });
+    totalDocsQuery = totalDocsQuery.find({
+      brand: { $in: req.query.brand.split(",") },
+    });
   }
 
   // Sorting...
