@@ -10,6 +10,7 @@ const productSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true, unique: true },
   price: { type: Number, required: true, min: 0, max: 10000 },
+  discountedPrice: { type: Number, required: true },
   discountPercentage: { type: Number, required: true, min: 0, max: 100 },
   rating: { type: Number, min: 0, max: 5, default: 0 },
   stock: { type: Number, required: true, min: 0 },

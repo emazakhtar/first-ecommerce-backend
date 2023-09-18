@@ -5,15 +5,19 @@ const mongoose = require("mongoose");
 if (mongoose.connection.models["User"]) {
   delete mongoose.connection.models["User"];
 }
-const userSchema = new Schema({
-  email: { type: String, required: true, unique: true },
-  name: { type: String },
-  password: { type: Buffer, required: true },
-  role: { type: String, required: true, default: "user" },
-  address: { type: [Schema.Types.Mixed] },
-  orders: { type: [Schema.Types.Mixed] },
-  salt: { type: Buffer },
-});
+const userSchema = new Schema(
+  {
+    email: { type: String, required: true, unique: true },
+    name: { type: String },
+    password: { type: Buffer, required: true },
+    resetToken: { type: String },
+    role: { type: String, required: true, default: "user" },
+    address: { type: [Schema.Types.Mixed] },
+    orders: { type: [Schema.Types.Mixed] },
+    salt: { type: Buffer },
+  },
+  { timestamps: true }
+);
 
 const virtualId = userSchema.virtual("id");
 virtualId.get(function () {

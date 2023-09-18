@@ -14,6 +14,9 @@ router
     "/check",
     passport.authenticate("jwt", { session: false }),
     authController.checkUser
-  );
+  )
+  .post("/reset-password-request", authController.resetPasswordRequest)
+  .post("/reset-password", authController.resetPassword)
+  .get("/logout", authController.logoutUser);
 
 exports.router = router;

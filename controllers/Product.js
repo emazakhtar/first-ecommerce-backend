@@ -4,6 +4,9 @@ const Product = model.Product;
 // CREATE...
 exports.create = async (req, res) => {
   const product = new Product(req.body);
+  product.discountedPrice = Math.round(
+    product.price - (product.discountPercentage / 100) * product.price
+  );
   try {
     const response = await product.save();
     res.status(201).json(response);
@@ -65,11 +68,30 @@ exports.update = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const response = await Product.findOneAndUpdate({ _id: id }, req.body, {
+    const product = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
     });
+    product.discountedPrice = Math.round(
+      product.price - (product.discountPercentage / 100) * product.price
+    );
+    const response = await product.save();
     res.status(200).json(response);
   } catch (err) {
     res.status(400).json(err);
+  }
+};
+
+exports.initializeDiscountedPrice = async (req, res) => {
+  try {
+    const products = await Product.find();
+    for (let product of products) {
+      product.discountedPrice = Math.round(
+        product.price - (product.discountPercentage / 100) * product.price
+      );
+      await product.save();
+    }
+    res.status(200).json("all feilds updated");
+  } catch (err) {
+    res.status(200).json("all feilds updated");
   }
 };
