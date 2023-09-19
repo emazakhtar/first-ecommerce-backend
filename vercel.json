@@ -1,4 +1,13 @@
 {
+  "headers": [
+    {
+      "source": "/build/static/(.*)", 
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ],
   "builds": [
     {
       "src": "index.js",
