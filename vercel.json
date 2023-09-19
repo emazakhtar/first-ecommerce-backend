@@ -1,13 +1,5 @@
 {
-  "headers": [
-    {
-      "source": "/static/(.*)", 
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store"
-        }
-      ],
+ 
   "builds": [
     {
       "src": "index.js",
@@ -18,6 +10,15 @@
       "use": "@vercel/static"
     }
   ],
+  "headers": [
+    {
+      "source": "/static/(.*)", 
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ],
 
   "rewrites": [{ "source": "/(.*)", "destination": "index.js" }]
 }
