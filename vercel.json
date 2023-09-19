@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/build/static/(.*)", 
+      "source": "/static/(.*)", 
       "headers": [
         {
           "key": "Cache-Control",
