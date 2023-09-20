@@ -102,7 +102,7 @@ exports.resetPasswordRequest = async (req, res) => {
         from: '"E-commerce" <emazakhtar11@gmail.com>',
         to: email,
         subject: "Password Reset for Ecommerce",
-        text: `Click this link to reset your password: http://localhost:3000/reset-password?token=${resetToken}&email=${user.email}`,
+        text: `Click this link to reset your password: https://mern-ecommerce-eosin.vercel.app/reset-password?token=${resetToken}&email=${user.email}`,
         // html: resetPasswordTemplate(),
       });
       res.status(200).json({ message: "email successfully sent" });
