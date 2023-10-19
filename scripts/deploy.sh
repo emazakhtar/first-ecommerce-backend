@@ -1,4 +1,4 @@
-export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v20.8.0/bin
+export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v21.0.0/bin
 
 cd first-ecommerce-backend
 git pull origin master
