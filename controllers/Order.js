@@ -14,7 +14,6 @@ exports.createOrder = async (req, res) => {
     const user = await User.findById(doc.user);
 
     // let update, arrayFilters, options;
-
     for (let item of order.cartItems) {
       console.log("0");
       const productId = item.product.id;
@@ -22,46 +21,46 @@ exports.createOrder = async (req, res) => {
       const color = item.color;
       const quantity = item.quantity;
       console.log("1");
+      if (item.product.variants.length > 0) {
+        // Define the condition, update, and options variables here
+        const condition = {
+          // Your condition here
+          // For example, find the product with a specific name
+          _id: productId,
+        };
 
-      // Define the condition, update, and options variables here
-      const condition = {
-        // Your condition here
-        // For example, find the product with a specific name
-        _id: productId,
-      };
+        const update = {
+          $inc: {
+            "variants.$[elem].stock": -1 * quantity, // Use "elem" to refer to the matched variant
+            stock: -1 * quantity,
+          },
+          // $set: {
+          //   // Update the variant (for example, set the 'stock' field)
+          //   "variants.$[elem].stock": -1 * quantity, // Replace with the new value you want to set
+          // },
+        };
 
-      const update = {
-        $inc: {
-          "variants.$[elem].stock": -1 * quantity, // Use "elem" to refer to the matched variant
-          stock: -1 * quantity,
-        },
-        // $set: {
-        //   // Update the variant (for example, set the 'stock' field)
-        //   "variants.$[elem].stock": -1 * quantity, // Replace with the new value you want to set
-        // },
-      };
+        const arrayFilters = [{ "elem.size": size, "elem.color": color }];
 
-      const arrayFilters = [{ "elem.size": size, "elem.color": color }];
+        const options = {
+          arrayFilters,
+          new: true, // Return the updated document
+          // runValidators: true, // Run validators (if you have any) on the update
+        };
 
-      const options = {
-        arrayFilters,
-        new: true, // Return the updated document
-        // runValidators: true, // Run validators (if you have any) on the update
-      };
-
-      console.log("10");
-      const updatedProduct = await Product.findOneAndUpdate(
-        condition,
-        update,
-        options
-      );
-
-      if (updatedProduct) {
-        console.log("Updated product:", updatedProduct);
-        // Handle the updated product document here
-      } else {
-        console.log("No matching product found.");
-        // Handle the case where no matching product was found
+        console.log("10");
+        const updatedProduct = await Product.findOneAndUpdate(
+          condition,
+          update,
+          options
+        );
+        if (updatedProduct) {
+          console.log("Updated product:", updatedProduct);
+          // Handle the updated product document here
+        } else {
+          console.log("No matching product found.");
+          // Handle the case where no matching product was found
+        }
       }
     }
     sendMail({
