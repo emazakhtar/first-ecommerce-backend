@@ -164,7 +164,7 @@ app.use("/orders", isAuth(), orderRouter.router);
 app.get("*", (req, res) => res.sendFile(path.resolve("build", "index.html")));
 // jwt Strategy...
 
-const opts = {};
+let opts = {};
 opts.jwtFromRequest = cookieExtractor;
 opts.secretOrKey = process.env.JWT_SECRET;
 
