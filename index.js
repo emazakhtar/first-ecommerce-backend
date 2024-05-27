@@ -154,7 +154,7 @@ app.post("/create-payment-intent", async (req, res) => {
   });
 });
 
-app.use("/products", isAuth(), productRouter.router);
+app.use("/products", productRouter.router);
 app.use("/brands", isAuth(), brandRouter.router);
 app.use("/category", isAuth(), categoryRouter.router);
 app.use("/user", isAuth(), userRouter.router);
