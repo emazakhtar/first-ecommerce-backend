@@ -98,6 +98,6 @@ exports.initializeDiscountedPrice = async (req, res) => {
     }
     res.status(200).json("all feilds updated");
   } catch (err) {
-    res.status(200).json("all feilds updated");
+    res.status(401).json(err);
   }
 };
