@@ -1,3 +1,18 @@
+require("dotenv").config();
+const Redis = require("ioredis");
+const twilio = require("twilio");
+
+// Initialize Twilio client
+// const client = twilio(
+//   process.env.TWILIO_ACCOUNT_SID,
+//   process.env.TWILIO_AUTH_TOKEN
+// );
+
+// Initialize Redis client
+// const redis = new Redis({
+//   host: process.env.REDIS_HOST,
+//   port: process.env.REDIS_PORT,
+// });
 const model = require("../models/User");
 const {
   sanitizeUser,
@@ -168,3 +183,34 @@ exports.resetPassword = async (req, res) => {
     res.status(400).json(err);
   }
 };
+
+//***************************************         OTP LOGIC         ***************************************************
+// Helper function to generate random OTP
+const generateOTP = () =>
+  Math.floor(100000 + Math.random() * 900000).toString();
+
+// Route to request OTP
+exports.requestOtp = async (req, res) => {
+  // const { phoneNumber } = req.body;
+  // if (!phoneNumber)
+  //   return res.status(400).json({ error: "Phone number is required" });
+  // // Generate and store OTP
+  // const otp = generateOTP();
+  // const ttl = 300; // Time-to-live of OTP in seconds (5 minutes)
+  // // Store OTP in Redis with a 5-minute expiration
+  // await redis.set(`otp:${phoneNumber}`, otp, "EX", ttl);
+  // // Send OTP via Twilio
+  // try {
+  //   await client.messages.create({
+  //     body: `Your OTP code is ${otp}`,
+  //     from: process.env.TWILIO_PHONE_NUMBER,
+  //     to: phoneNumber,
+  //   });
+  //   res.status(200).json({ message: "OTP sent successfully" });
+  // } catch (error) {
+  //   res.status(500).json({ error: "Error sending OTP" });
+  // }
+};
+
+// Route to verify OTP
+exports.verifyOtp = async (req, res) => {};

@@ -17,6 +17,8 @@ router
   )
   .post("/reset-password-request", authController.resetPasswordRequest)
   .post("/reset-password", authController.resetPassword)
-  .get("/logout", authController.logoutUser);
+  .get("/logout", authController.logoutUser)
+  .post("/verify-otp", authController.verifyOtp)
+  .post("/request-otp", authController.requestOtp);
 
 exports.router = router;

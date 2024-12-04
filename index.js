@@ -11,6 +11,8 @@ const userRouter = require("./routes/User");
 const authRouter = require("./routes/auth");
 const cartRouter = require("./routes/Cart");
 const orderRouter = require("./routes/Order");
+const returnRouter = require("./routes/Return");
+const reviewRouter = require("./routes/Review");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const session = require("express-session");
@@ -161,6 +163,8 @@ app.use("/user", isAuth(), userRouter.router);
 app.use("/auth", authRouter.router);
 app.use("/cart", isAuth(), cartRouter.router);
 app.use("/orders", isAuth(), orderRouter.router);
+app.use("/return", isAuth(), returnRouter.router);
+app.use("/review", isAuth(), reviewRouter.router);
 app.get("*", (req, res) => res.sendFile(path.resolve("build", "index.html")));
 // jwt Strategy...
 
