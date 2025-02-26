@@ -1,7 +1,7 @@
 require("dotenv").config();
 const Redis = require("ioredis");
 const twilio = require("twilio");
-
+const { OAuth2Client } = require("google-auth-library");
 // Initialize Twilio client
 // const client = twilio(
 //   process.env.TWILIO_ACCOUNT_SID,
@@ -22,9 +22,101 @@ const {
 const User = model.User;
 const crypto = require("crypto");
 
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const SECRET_KEY = process.env.JWT_SECRET;
 const jwt = require("jsonwebtoken");
 
+// FOR GOOGLE OAUTH LOGIN/SIGNUP...
+const findOrCreateUser = async (userData) => {
+  // First, try to find user by googleId
+  let user = await User.findOne({ googleId: userData.googleId });
+  let isNewUser = false;
+
+  if (!user) {
+    // If not found by googleId, check if a user with the same email exists.
+    user = await User.findOne({ email: userData.email });
+    if (user) {
+      // User exists, but hasn't linked their Google account.
+      // Update the user document to include googleId.
+      user.googleId = userData.googleId;
+      await user.save();
+    } else {
+      // If no user exists with that email, create a new record.
+      user = await User.create(userData);
+      isNewUser = true;
+    }
+  }
+  return { user, isNewUser };
+};
+
+exports.googleAuth = async (req, res) => {
+  const { token } = req.body; // token sent from frontend after Google sign-in
+
+  try {
+    // Verify the token with Google's OAuth2Client.
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    // Extract needed user information from Google payload
+    const { sub: googleId, email, name, picture } = payload;
+
+    // Look up the user in the database; if not found, create a new user.
+    const { user, isNewUser } = await findOrCreateUser({
+      googleId,
+      email,
+      name,
+      picture,
+    });
+
+    const jwtToken = jwt.sign(sanitizeUser(user), SECRET_KEY);
+    // Generate a JWT for your application.
+    // We include minimal info (e.g., user ID) in the token.
+    // const jwtToken = jwt.sign(
+    //   { id: user._id },
+    //   process.env.JWT_SECRET,
+    //   { expiresIn: "1h" } // token expiration set to 1 hour
+    // );
+    res
+      .status(200)
+      .cookie("jwt", jwtToken, {
+        expires: new Date(Date.now() + 86400000), // cookie will be removed after 8 hours
+      })
+      .json(token);
+
+    // Cookie Options:
+    // httpOnly: prevents client-side JS from accessing the cookie.
+    // secure: ensures cookie is sent only over HTTPS (true in production).
+    // sameSite: 'lax' for development, 'none' for production if your frontend/backend are on different domains.
+    // const cookieOptions = {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production", // true in production
+    //   sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    //   maxAge: 3600000, // 1 hour in milliseconds
+    // };
+
+    // Set the JWT in a cookie on the response.
+    // res.cookie("token", jwtToken, cookieOptions);
+
+    // Return user data (without sensitive info) so frontend can update state.
+    // res.status(200).json({
+    //   user: {
+    //     id: user._id,
+    //     email: user.email,
+    //     name: user.name,
+    //     picture: user.picture,
+    //   },
+    //   message: isNewUser ? "Signup successful!" : "Login successful!",
+    // });
+  } catch (error) {
+    console.error("Error during Google OAuth:", error);
+    res.status(401).json({ message: "Unauthorized" });
+  }
+};
+
+// LOGIN USER
 exports.loginUser = async (req, res) => {
   console.log("req.user", req.user);
   if (req.user) {
@@ -38,6 +130,7 @@ exports.loginUser = async (req, res) => {
   }
 };
 
+// SIGNUP USER
 exports.signUpUser = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });

@@ -7,9 +7,15 @@ if (mongoose.connection.models["User"]) {
 }
 const userSchema = new Schema(
   {
+    googleId: { type: String, unique: true, sparse: true }, // Add Google ID
     email: { type: String, required: true, unique: true },
     name: { type: String },
-    password: { type: Buffer, required: true },
+    password: {
+      type: Buffer,
+      required: function () {
+        return !this.googleId;
+      },
+    },
     resetToken: { type: String },
     role: { type: String, required: true, default: "user" },
     address: { type: [Schema.Types.Mixed] },

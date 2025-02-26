@@ -4,6 +4,7 @@ const authController = require("../controllers/auth");
 const passport = require("passport");
 
 router
+
   .post(
     "/login",
     passport.authenticate("local", { session: false }),
@@ -19,6 +20,7 @@ router
   .post("/reset-password", authController.resetPassword)
   .get("/logout", authController.logoutUser)
   .post("/verify-otp", authController.verifyOtp)
-  .post("/request-otp", authController.requestOtp);
+  .post("/request-otp", authController.requestOtp)
+  .post("/google", authController.googleAuth);
 
 exports.router = router;
