@@ -26,7 +26,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const SECRET_KEY = process.env.JWT_SECRET;
 const jwt = require("jsonwebtoken");
 
-// FOR GOOGLE OAUTH LOGIN/SIGNUP...
+//DATABASE QUERY TO CREATE OR FIND USER FOR GOOGLE OAUTH LOGIN/SIGNUP...
 const findOrCreateUser = async (userData) => {
   // First, try to find user by googleId
   let user = await User.findOne({ googleId: userData.googleId });
@@ -49,6 +49,7 @@ const findOrCreateUser = async (userData) => {
   return { user, isNewUser };
 };
 
+// VERIFYING TOKEN GIVEN BY GOOGLE TO THE FRONTEND.....
 exports.googleAuth = async (req, res) => {
   const { token } = req.body; // token sent from frontend after Google sign-in
 
@@ -174,6 +175,7 @@ exports.signUpUser = async (req, res, next) => {
   }
 };
 
+// LOGOUT USER....
 exports.logoutUser = async (req, res) => {
   console.log("logout user called");
 
@@ -185,6 +187,7 @@ exports.logoutUser = async (req, res) => {
     .json({ message: "logout successfull" });
 };
 
+// CHECK/VERIFY THE Request....
 exports.checkUser = (req, res) => {
   console.log("checkuser ko hit kia");
   if (req && req.user) {
@@ -195,6 +198,7 @@ exports.checkUser = (req, res) => {
   }
 };
 
+// RESET PASSWORD REQUEST....
 exports.resetPasswordRequest = async (req, res) => {
   console.log("reset password request hit");
   const { email } = req.body;
@@ -239,6 +243,8 @@ exports.resetPasswordRequest = async (req, res) => {
 //     res.status(400).send("Token Invalid Or Expired");
 //   }
 // };
+
+// RESET PASSWORD....
 exports.resetPassword = async (req, res) => {
   console.log(req.body);
   const { email } = req.body;
@@ -278,6 +284,7 @@ exports.resetPassword = async (req, res) => {
 };
 
 //***************************************         OTP LOGIC         ***************************************************
+
 // Helper function to generate random OTP
 const generateOTP = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
