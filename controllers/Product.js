@@ -38,6 +38,13 @@ exports.getAll = async (req, res) => {
     });
   }
 
+  // 🔥 Adding Search Functionality
+  if (req.query.q) {
+    const searchRegex = new RegExp(req.query.q, "i"); // "i" makes it case-insensitive
+    query = query.find({ name: searchRegex });
+    totalDocsQuery = totalDocsQuery.find({ name: searchRegex });
+  }
+
   // Sorting...
   if (req.query._sort && req.query._order) {
     query = query.sort({ [req.query._sort]: req.query._order });
