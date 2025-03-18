@@ -10,7 +10,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout codename: Deploy
+
+on:
+  push:
+    branches:
+      - master # or the branch you want to deploy from
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: SSH and deploy
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > keyfile
+          chmod 600 keyfile
+          
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ec2-3-27-138-152.ap-southeast-2.compute.amazonaws.com >> ~/.ssh/known_hosts
+          
+          ssh -T -i keyfile ubuntu@ec2-3-27-138-152.ap-southeast-2.compute.amazonaws.com "sudo bash ~/first-ecommerce-backend/scripts/deploy.sh"
+
         uses: actions/checkout@v2
 
       - name: SSH and deploy
