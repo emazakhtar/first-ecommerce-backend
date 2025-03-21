@@ -17,6 +17,7 @@ exports.create = async (req, res) => {
 
 // READ...
 exports.getAll = async (req, res) => {
+  console.log("reached products api");
   let query = Product.find({});
   let totalDocsQuery = Product.find({});
 
