@@ -23,8 +23,8 @@ jobs:
 
           # Add the EC2 server to known hosts
           mkdir -p ~/.ssh
-          ssh-keyscan -H ec2-3-27-138-152.ap-southeast-2.compute.amazonaws.com >> ~/.ssh/known_hosts
+          ssh-keyscan -H ec2-3-27-250-34.ap-southeast-2.compute.amazonaws.com >> ~/.ssh/known_hosts
 
       - name: SSH into EC2 and Deploy
         run: |
-          ssh -T -i keyfile ubuntu@ec2-3-27-138-152.ap-southeast-2.compute.amazonaws.com "sudo bash ~/first-ecommerce-backend/scripts/deploy.sh"
+          ssh -T -i keyfile ubuntu@ec2-3-27-250-34.ap-southeast-2.compute.amazonaws.com "sudo bash ~/first-ecommerce-backend/scripts/deploy.sh"
