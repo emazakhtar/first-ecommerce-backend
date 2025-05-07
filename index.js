@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const http = require("http"); // For creating an HTTP server
 const cors = require("cors");
 const mongoose = require("mongoose");
 mongoose.User = {};
@@ -25,6 +26,20 @@ const path = require("path");
 const { Order } = require("./models/order");
 const JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
+const { Server: SocketIOServer } = require("socket.io");
+const socketHandler = require("./socketHandler");
+
+// Create an HTTP server using the Express app
+const server = http.createServer(app);
+
+// Initialize Socket.IO on the HTTP server with CORS settings (adjust for production)
+// Initialize Socket.IO on the HTTP server with CORS settings (adjust for production)
+io = new SocketIOServer(server, {
+  cors: {
+    origin: "*", // Allow all origins for testing; secure this in production.
+    methods: ["GET", "POST"],
+  },
+});
 
 main().catch((err) => console.log(err));
 async function main() {
@@ -96,13 +111,13 @@ app.post(
 app.use(express.static(path.resolve(__dirname, "build")));
 app.use(express.json());
 
-app.use(
-  cors({
-    exposedHeaders: ["X-Total-Count"],
-    origin: ["http://localhost:3000", "http://localhost:8080  "],
-    credentials: true,
-  })
-);
+/**
+ * Socket.IO Connection Event:
+ * This is where every new client connection is handled.
+ * We also define events like "getNotifications", "joinRoom", etc.
+ */
+
+socketHandler(io);
 
 app.use(cookieParser());
 // app.use(
@@ -249,6 +264,8 @@ passport.use(
 //     return done(error);
 //   }
 // });
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
   console.log("server started");
 });
+
+module.exports = io;

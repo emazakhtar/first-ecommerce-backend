@@ -1,11 +1,13 @@
 const { Product } = require("../models/Product");
 const { User } = require("../models/User");
+const { Notification } = require("../models/Notification");
 const model = require("../models/order");
 const { sendMail, invoiceTemplate } = require("../services/common");
 const Order = model.Order;
 
 exports.createOrder = async (req, res) => {
   const { id } = req.user;
+
   const order = new Order({ ...req.body, user: id });
 
   try {
@@ -63,13 +65,37 @@ exports.createOrder = async (req, res) => {
         }
       }
     }
+
+    // Create a notification message.
+    const message = `New Order Placed: ${doc.id}`;
+
+    const newNotification = new Notification({
+      resourceId: id, // Link notification to the user or post
+      message,
+      read: false,
+      createdAt: new Date(),
+    });
+
+    // Save the notification to MongoDB.
+    const savedNotification = await newNotification.save();
+    // Emit a "newNotification" event to all connected clients.
+    io.emit("newNotification", savedNotification);
+    // Send response back to the API caller.
+    // res
+    //   .status(200)
+    //   .json({ message: "Post created", notification: savedNotification });
+
     sendMail({
       from: '"E-commerce" <emazakhtar11@gmail.com>',
       to: user.email,
       subject: "Order Successfully Placed",
       html: invoiceTemplate(doc),
     });
-    res.status(200).json(doc);
+    res.status(200).json({
+      ...doc,
+      message: "Post created",
+      notification: savedNotification,
+    });
   } catch (err) {
     console.log(err);
     res.status(400).json(err);
